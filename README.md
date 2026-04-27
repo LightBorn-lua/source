@@ -1,6 +1,6 @@
 # LightBorn
-> A fully fleshed and centralized Emergency Lighting System controller.
+> A moddable Emergency Lighting System for Roblox.
 
-LightBorn is Emergency Lighting System controller focused on creating a new standard of ELS creation within ROBLOX.
+LightBorn is an attempt on creating a new standard of ELS creation within ROBLOX.
 
 [read the docs here](https://error-cezar.github.io/LightBorn) *(https://error-cezar.github.io/LightBorn)*
