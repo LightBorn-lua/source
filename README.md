@@ -1,4 +1,6 @@
-# LightBorn
+# LightBorn [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
+
 > A moddable Emergency Lighting System for Roblox.
 
 LightBorn is an attempt on creating a new standard of ELS creation within ROBLOX.
