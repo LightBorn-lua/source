@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy documentation
 
 on:
   # Trigger the workflow every time you push to the `main` branch
@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   build:
+    name: "Building"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
@@ -24,6 +25,7 @@ jobs:
         uses: withastro/action@v5
 
   deploy:
+    name: "Deployment"
     needs: build
     runs-on: ubuntu-latest
     environment:
