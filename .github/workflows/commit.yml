@@ -1,4 +1,4 @@
-name: commitlint
+name: commit
 
 on: [push, pull_request]
 
