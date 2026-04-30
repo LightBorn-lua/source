@@ -1,4 +1,4 @@
-name: CI
+name: commitlint
 
 on: [push, pull_request]
 
@@ -7,6 +7,7 @@ permissions:
 
 jobs:
   commitlint:
+    name: "Lint verification"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
