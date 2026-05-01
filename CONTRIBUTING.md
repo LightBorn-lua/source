@@ -1,4 +1,4 @@
-# Contributing to LightBorn
+# Contributing to the repository
 
 LightBorn is a community project and welcomes any kind of contribution from anyone.
 
