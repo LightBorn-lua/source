@@ -124,32 +124,44 @@ local ExtraList = LB_Settings:FindFirstChild("Extra")
 
 for _,Module in ExtraList and ExtraList:GetChildren() or {} do
 	local status, result = pcall(require, Module)
-	if not status then Logger.warn(Module.Name, "failed to load extra ->", result); return nil end
+	if not status then
+		Logger.warn(Module.Name, "failed to load extra ->", result);
+		return nil
+	end
+
 	local Name, Extra = result.Name, result.Execute
-	if not Name or not Extra then Logger.warn(Module.Name, "Couldn't to load extra ->", "no name or execute"); continue end
-	if not Extras[Name] then Logger.warn(Module.Name, "Extra '", Name, "' doesn't exist"); continue end
+	if not Name or not Extra then
+		Logger.warn(Module.Name, "Couldn't to load extra ->", "no name or execute");
+		continue
+	end
+
+	if not Extras[Name] then
+		Logger.warn(Module.Name, "Extra '", Name, "' doesn't exist");
+		continue
+	end
+
 	table.insert(Extras[Name], Extra)	
 end
 
 -- // SHARED VALUES \\ --
-local SharedData = {
+local _SharedData = {
 	Settings = Settings,
 	MT = MT
 }
 
-SharedData["root"] = script
-SharedData["Lightos"] = Lightos
-SharedData["Extras"] = Extras
-SharedData["Shared"] = Shared
-SharedData["Effects"] = Effects
-SharedData["SetupPart"] = SetupPart
+_SharedData["root"] = script
+_SharedData["Lightos"] = Lightos
+_SharedData["Extras"] = Extras
+_SharedData["Shared"] = Shared
+_SharedData["Effects"] = Effects
+_SharedData["SetupPart"] = SetupPart
 
 -- // LOGIC FUNCTIONS \\ --
-function OnModuleUpdate(CarData, v, ID)
+function OnModuleUpdate(CarData, Module, ID)
 	-- loop every functions
 	local ToRun = {}
-	for Name, Data in v.Data do
-		if (Data.Stopped and not Data.Running) and v.Tasks[Name] then
+	for Name, Data in Module.Data do
+		if (Data.Stopped and not Data.Running) and Module.Tasks[Name] then
 			-- Logger.warn("Killing task", Name, "//", ID)
 			CarData:KillTask(ID, Name)
 			continue
@@ -157,7 +169,7 @@ function OnModuleUpdate(CarData, v, ID)
 
 		if (Data.Started and not Data.Running and not Data.Stopped) or (Data.Started and not Data.Running and Data.Ended and not Data.Stopped) then
 			--Logger.warn("Running task", Name, "//", ID)
-			table.insert(ToRun, {ID, Name, v.Content[Name]})
+			table.insert(ToRun, {ID, Name, Module.Content[Name]})
 		end
 	end
 
@@ -176,10 +188,13 @@ end
 
 function SetupPart(Module: ModuleScript) : {} | nil
 	local status, result = pcall(require, Module)
-	if not status then Logger.warn(Module.Name, "failed to load part ->", result); return nil end
+	if not status then
+		Logger.warn(Module.Name, "failed to load part ->", result);
+		return nil
+	end
 	local env = getfenv(result)
 	
-	env.SharedData = SharedData
+	env._SharedData = _SharedData
 	
 	return result()
 end
@@ -275,7 +290,11 @@ function TurnOffCheck(CarData: Helper.SystemData)
 		for ToggleName,Data in CarData.Settings.TurnOff._getTable do
 			for Name,List in Data do
 				local ToCheck = CarData.System.Values:FindFirstChild(Name)
-				if not ToCheck then Logger.warn("invalid toggle name", Name); continue end
+				if not ToCheck then
+					Logger.warn("invalid toggle name", Name);
+					continue
+				end
+
 				if not table.find(List, ToCheck.Value) then continue end
 
 				if ToggleName == "Siren" then
@@ -293,7 +312,10 @@ function TurnOnCheck(CarData: Helper.SystemData, ToggleName: string)
 			ToggleData = ToggleData._getTable
 			for Name,List in ToggleData do
 				local ToCheck = CarData.System.Values:FindFirstChild(Name)
-				if not ToCheck then Logger.warn("invalid toggle name", Name); continue end
+				if not ToCheck then
+					Logger.warn("invalid toggle name", Name);
+					continue
+				end
 				if not table.find(List, ToCheck.Value) then continue end
 				
 				return true
@@ -330,12 +352,20 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 	if Mode == "Stage" then
 		local ID = Data
 		if typeof(ID) ~= "number" and ID ~= nil then return end
-		if ID == nil then ID = Values.Stage.Value + 1 end
+
+		if ID == nil then
+			ID = Values.Stage.Value + 1
+		end
 		
-		if ID > CarData.MaxStage then ID = 0 end
-		if ID < 0 then ID = 0 end
+		if ID > CarData.MaxStage then
+			ID = 0
+		end
+
+		if ID < 0 then
+			ID = 0
+		end
 		
-		for _,v in SharedData.Extras.Stage do
+		for _,v in _SharedData.Extras.Stage do
 			v(ID, CarData)
 		end
 		
@@ -352,12 +382,18 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 		local ID = Data
 		if typeof(ID) ~= "number" and ID ~= nil then return end
 		
-		if ID == nil then ID = Values.Dir.Value + 1 end
+		if ID == nil then
+			ID = Values.Dir.Value + 1
+		end
 		
-		if ID > CarData.MaxDir then ID = 0 end
-		if ID < 0 then ID = 0 end
+		if ID > CarData.MaxDir then
+			ID = 0
+		end
+		if ID < 0 then
+			ID = 0
+		end
 		
-		for _,v in SharedData.Extras.Dir do
+		for _,v in _SharedData.Extras.Dir do
 			v(ID, CarData)
 		end
 		
@@ -395,12 +431,14 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 		end
 		
 		-- if toggle is nil, make it the opposite of the current status
-		if Toggle == nil then Toggle = not SirenIns.Value end
+		if Toggle == nil then
+			Toggle = not SirenIns.Value
+		end
 		
 		-- whenever the old siren is saved (turning it off plays the old siren)
 		local IsSpecial = ((Siren == "Airhorn") or (Siren == "Manual") or (Siren == "PA"))
 		
-		for _,v in SharedData.Extras.Siren do
+		for _,v in _SharedData.Extras.Siren do
 			v(Siren, Toggle, CarData)
 		end
 		
@@ -409,7 +447,7 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 				local MainCheck = TurnOnCheck(CarData, "Special")
 				local SecCheck  = TurnOnCheck(CarData, Siren)
 				
-				if (MainCheck and SecCheck) then
+				if MainCheck and SecCheck then
 					local Status = CarData:EnableSiren(Siren, ID, false, (Siren == "PA" and player or nil))
 					if Status and CarData.Settings.OnInterfaceUse then
 						CarData.Settings.OnInterfaceUse(CarData, "SpecialSiren", Siren, true)
@@ -419,7 +457,7 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 				local MainCheck = TurnOnCheck(CarData, "Special")
 				local SecCheck  = TurnOnCheck(CarData, Siren)
 				
-				if (MainCheck and SecCheck) then
+				if MainCheck and SecCheck then
 					print(MainCheck, SecCheck)
 					local Status = CarData:EnableSiren(Siren, ID, true)
 					if Status and CarData.Settings.OnInterfaceUse then
@@ -457,9 +495,11 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 		end
 		
 		-- if toggle is nil, make it the opposite of the current status
-		if Toggle == nil then Toggle = not ValueIns.Value end
+		if Toggle == nil then
+			Toggle = not ValueIns.Value
+		end
 		
-		for _,v in SharedData.Extras.Special do
+		for _,v in _SharedData.Extras.Special do
 			v(Special, Toggle, CarData)
 		end
 		
@@ -487,9 +527,11 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 
 		local SirenConfig = SirenFolder.Config
 		local ValueIns = SirenConfig.IsAlt
-		if Toggle == nil then Toggle = not ValueIns.Value end
+		if Toggle == nil then
+			Toggle = not ValueIns.Value
+		end
 		
-		for _,v in SharedData.Extras.Special do
+		for _,v in _SharedData.Extras.Special do
 			v("Alt", Toggle, CarData)
 		end
 		

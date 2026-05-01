@@ -1,5 +1,3 @@
-SharedData = {}
-
 local module = {}
 
 local SirenValues = {
@@ -21,7 +19,9 @@ local SirenValues = {
 function module.GenerateSirenValues(Target: Instance)
 	for Name, Type in SirenValues do
 		if typeof(Type) == "table" then
-			local Folder_Target = Instance.new("Folder", Target)
+			local Folder_Target = Instance.new("Folder")
+			Folder_Target.Name = Name
+			Folder_Target.Parent = Target
 			for FName, FType in Type do
 				local Value = Instance.new(FType)
 				Value.Name = FName

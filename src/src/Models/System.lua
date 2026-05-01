@@ -266,7 +266,7 @@ function API:InitializeModules(ModulesLocation: Instance)
 		end
 		
 		env.self.DL = (function()
-			for ID,v in self.Modules[Module.Name].Spawns._getTable do
+			for ID,_ in self.Modules[Module.Name].Spawns._getTable do
 				env.Environment.cancel(ID)
 			end
 			
@@ -278,8 +278,14 @@ function API:InitializeModules(ModulesLocation: Instance)
 		end)
 		
 		env.self.Initialize = (function()
-			if not env.ELSLocation then Logger.warn("'ELSLocation' ENV VARIABLE DOES NOT EXIST =>", Module); return; end
-			if typeof(env.ELSLocation) ~= "Instance" then Logger.warn("'ELSLocation' IS NOT AN INSTANCE =>", Module); return; end
+			if not env.ELSLocation then
+				Logger.warn("'ELSLocation' ENV VARIABLE DOES NOT EXIST =>", Module); 
+				return;
+			end
+			if typeof(env.ELSLocation) ~= "Instance" then
+				Logger.warn("'ELSLocation' IS NOT AN INSTANCE =>", Module); 
+				return; 
+			end
 			
 			local Empty = true
 			for _,v: Instance in env.ELSLocation:GetDescendants() do

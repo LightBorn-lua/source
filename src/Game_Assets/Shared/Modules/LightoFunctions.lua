@@ -2,12 +2,16 @@ local module = {}
 
 function module.Color(Part: BasePart, Value: any, Colors: {})
 	local Color: Color3 | string = Colors[Value]
-	if not Color then Color = "off" end
+	if not Color then
+		Color = "off"
+end
 	local LightoClone = Part:FindFirstChild("Lighto") :: SurfaceGui
 	local Light: SpotLight = Part:FindFirstChild("Light") :: SpotLight
 
 	if Color == "off" then
-		if LightoClone then LightoClone.Enabled = false end
+		if LightoClone then
+			LightoClone.Enabled = false
+		end
 		Light.Enabled = false
 		if Part:GetAttribute("Type") == "part" then
 			Part.Transparency = 1

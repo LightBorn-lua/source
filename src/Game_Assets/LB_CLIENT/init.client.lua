@@ -1,7 +1,13 @@
-repeat task.wait() until game:IsLoaded()
+repeat
+	task.wait()
+until game:IsLoaded()
+
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
-repeat task.wait(.5) until LP.Character
+
+repeat
+	task.wait(.5)
+until LP.Character
 
 local UIM = require(script.UIHandle)
 
@@ -28,12 +34,15 @@ end
 
 function OnUI(UI: Instance)	
 	local UIName = HTTP:GenerateGUID(true)
-	UI.AncestryChanged:Connect(function(child: Instance, parent: Instance?)
+	UI.AncestryChanged:Connect(function(_: Instance, parent: Instance?)
 		if parent then return end
 		local Data = UIData[UIName]
 
 		if not Data then
-			repeat Data = UIData[UIName]; task.wait(.5) until Data
+			repeat
+				Data = UIData[UIName];
+				task.wait(.5);
+			until Data
 		end
 
 		Data:Remove()

@@ -33,7 +33,9 @@ function API:CreateTask(module: string, name: string, exe: () -> ())
 			do
 				CurModule.Data[name].Running = false
 				CurModule.Data[name].Ended = true
-				task.delay(0, function() self.InitConnections["TaskUpdate"](self, CurModule._getTable, module) end)
+				task.delay(0, function()
+					self.InitConnections["TaskUpdate"](self, CurModule._getTable, module)
+				end)
 			end
 		end
 	end)

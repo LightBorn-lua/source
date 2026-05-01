@@ -1,4 +1,4 @@
-SharedData = {}
+_SharedData = {}
 
 local Rep = game:GetService("ReplicatedStorage")
 local Http = game:GetService("HttpService")
@@ -104,7 +104,10 @@ module.InitializeVehicle = function(Vehicle: Model, Connections: {[string]: () -
 	
 	for n,v in TableConcat(RequiredValues, CT) do
 		local InsType = Types.Instances[v["Type"]]
-		if not InsType then Logger.warn("Type is invalid for", n); continue end
+		if not InsType then
+			Logger.warn("Type is invalid for", n);
+			continue
+		end
 		local Val = Instance.new(InsType)
 		Val.Name = n
 		Val.Parent = Values
@@ -210,7 +213,9 @@ end
 
 module.InitializeLight = function(Vehicle: Helper.SystemData, Light: BasePart)
 	local LType = Light:GetAttribute("Type")
-	if not LType or typeof(LType) ~= "string" then LType = "N/A" end
+	if not LType or typeof(LType) ~= "string" then
+		LType = "N/A"
+	end
 
 	local LightoType = string.lower(LType)
 	Light:SetAttribute("Type", LightoType)
@@ -229,7 +234,7 @@ module.InitializeLight = function(Vehicle: Helper.SystemData, Light: BasePart)
 	ColorValue.Parent = Light
 	
 	if LightoType == "effect" then
-		local Effect: SurfaceGui = SharedData.Effects[LightoName] or SharedData.Effects.Default
+		local Effect: SurfaceGui = _SharedData.Effects[LightoName] or _SharedData.Effects.Default
 		local EffectClone: SurfaceGui = Effect:Clone()
 		
 		local StatusValue = Instance.new("BoolValue")
@@ -264,7 +269,7 @@ module.InitializeLight = function(Vehicle: Helper.SystemData, Light: BasePart)
 		BrightValue.Parent = Light
 		BrightValue.Value = -1
 
-		local Lighto: SurfaceGui = SharedData.Lightos[LightoName] or SharedData.Lightos.Default
+		local Lighto: SurfaceGui = _SharedData.Lightos[LightoName] or _SharedData.Lightos.Default
 		local LightoClone: SurfaceGui = Lighto:Clone()
 		
 		LightoClone.Face = CustomFace or LightoClone.Face
@@ -277,7 +282,7 @@ module.InitializeLight = function(Vehicle: Helper.SystemData, Light: BasePart)
 	LightoModule.new(Vehicle, Light, CustomFace or Enum.NormalId.Back)
 	
 	local Colors = Vehicle.Settings.Colors._getTable
-	local Renderer = Vehicle.Settings.Renderer or SharedData.Settings.Renderer or "Server"
+	local Renderer = Vehicle.Settings.Renderer or _SharedData.Settings.Renderer or "Server"
 	if Renderer == "Server" then
 		LightoHandler(Light, Colors)
 	else
@@ -285,7 +290,7 @@ module.InitializeLight = function(Vehicle: Helper.SystemData, Light: BasePart)
 		Light:SetAttribute("Colors", EncodeColorTable(Colors))
 	end
 	
-	for _,v in SharedData.Extras.Lighto do
+	for _,v in _SharedData.Extras.Lighto do
 		v(Light, Vehicle)
 	end
 end

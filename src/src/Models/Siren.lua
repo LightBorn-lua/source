@@ -1,3 +1,4 @@
+local ServerScriptService = game:GetService("ServerScriptService")
 local src = script.Parent.Parent
 local Root = src.Parent
 -----------------
@@ -5,6 +6,7 @@ local Helpers = Root.Helpers
 local Modules = Root.Modules
 local Assets = Root.Assets
 
+local Logger = require(ServerScriptService.LightBorn.Modules.Logger)
 local Helper = require(Helpers.Helper)
 local MT = require(Modules.MetaTable)
 
@@ -64,7 +66,10 @@ function API:IntializeSiren()
 		local SirenID = v:GetAttribute("SirenID")
 		if not SirenID then continue end
 		SirenID = tonumber(SirenID)
-		if not SirenID then warn("ID MUST BE A NUMBER"); continue end
+		if not SirenID then
+			Logger.warn("ID MUST BE A NUMBER");
+			continue
+		end
 
 		if not self.SirenParts[SirenID] then
 			self.SirenParts[SirenID] = {}
@@ -136,7 +141,9 @@ function API:IntializeSiren()
 			Speed = Data.Player.PlaybackSpeed,
 		}
 
-		if not self.AvailableSirens then self.AvailableSirens = {} end
+		if not self.AvailableSirens then
+			self.AvailableSirens = {}
+		end
 		self.AvailableSirens[SirenID] = {}
 		if self.Settings.Sirens[SirenID] then
 			for Name,_ in self.Settings.Sirens[SirenID]._getTable do
@@ -177,7 +184,7 @@ function LinkWires(Instances: {}, StartPos: Instance, Data: {})
 	local InsID = 1
 	local OldEffect = nil
 	--print(Instances)
-	for n,v in Instances do
+	for _,v in Instances do
 		-- print(v)
 		local Effect: Instance = Instance.new(v[1])
 		for Property,Value in v[2] do
@@ -187,7 +194,9 @@ function LinkWires(Instances: {}, StartPos: Instance, Data: {})
 
 		if InsID == 1 then
 			--print("Run 1", v)
-			if Data["Wires"]["Player"] then Data["Wires"]["Player"]:Destroy() end
+			if Data["Wires"]["Player"] then
+				Data["Wires"]["Player"]:Destroy()
+			end
 			local Wire = CreateWire(StartPos, Effect)
 			Data["Wires"]["Player"] = Wire
 		elseif InsID == #Instances then
@@ -208,12 +217,14 @@ function LinkWires(Instances: {}, StartPos: Instance, Data: {})
 end
 
 function UnlinkWires(StartPos: Instance, Data: {})
-	if Data["Wires"]["Player"] then Data["Wires"]["Player"]:Destroy() end
+	if Data["Wires"]["Player"] then
+		Data["Wires"]["Player"]:Destroy()
+	end
 	Data["Wires"]["Player"] = CreateWire(StartPos, Data["Emitter"])
 end
 
 function LinkAudio(Instances: {}, Data: {})
-	for n,v in Instances do
+	for _,v in Instances do
 		-- print(v)
 		local Effect: Instance = Instance.new(v[1])
 		for Property,Value in v[2] do
@@ -256,7 +267,11 @@ function API:SirenOn(SirenCategory: number, Name: string, Asset: {AssetID: strin
 		
 		local InsFold = self.Settings.Sirens[SirenCategory][Name]
 		local Instances = not NoEffectCheck and (InsFold and InsFold.Instances or nil) or nil
-		if Instances then Instances = Instances[ID]._getTable else Instances = {} end
+		if Instances then
+			Instances = Instances[ID]._getTable
+		else
+			Instances = {}
+		end
 		
 		if not NoEffectCheck then
 			if #Instances > 0 then
@@ -282,7 +297,11 @@ function API:SirenOn(SirenCategory: number, Name: string, Asset: {AssetID: strin
 				Data["Player"].PlaybackSpeed = Asset.Speed
 			end
 			if Playing or not Data["Player"].IsPlaying then
-				if OldAudio then Data["LegacyPlayer"]:Play() else Data["Player"]:Play() end
+				if OldAudio then
+					Data["LegacyPlayer"]:Play()
+				else
+					Data["Player"]:Play()
+				end
 			end
 		end
 	end
@@ -292,7 +311,7 @@ function API:SirenOff(SirenCategory: number)
 	local Sirens = self.SirenParts[SirenCategory]
 	if not Sirens then return end
 
-	for Name,Data in Sirens._getTable do
+	for _,Data in Sirens._getTable do
 		for _,v in Data["Effects"]:GetChildren() do
 			v:Destroy()
 		end
@@ -301,7 +320,9 @@ function API:SirenOff(SirenCategory: number)
 			v:Destroy()
 		end
 		
-		if Data["Wires"]["Player"] then Data["Wires"]["Player"]:Destroy() end
+		if Data["Wires"]["Player"] then
+			Data["Wires"]["Player"]:Destroy()
+		end
 		
 		Data["Player"]:Stop()
 		Data["Player"].TimePosition = 0
@@ -338,7 +359,9 @@ function API:EnableSiren(Siren: string, IDs: {number} | number, Overwrite: boole
 			AssetID = SirenData.SoundID[IsAlt and "alternative" or "default"]
 		end
 
-		if #CurrentSiren > 1 then self:DisableSiren(IDName, Overwrite or false) end
+		if #CurrentSiren > 1 then
+			self:DisableSiren(IDName, Overwrite or false)
+		end
 		
 		
 		self:SirenOn(IDName, Siren, {AssetID = AssetID, Volume = Volume, Speed = Speed}, Overwrite, nil, Player)
@@ -415,7 +438,9 @@ function API:ResumeSiren(IDs: {number} | number)
 		if IsAlt and not SirenData.SoundID["alternative"] then continue end
 		if not IsAlt and not SirenData.SoundID["default"] then continue end
 
-		if #CurrentSiren > 1 then self:DisableSiren(IDName) end
+		if #CurrentSiren > 1 then
+			self:DisableSiren(IDName)
+		end
 		
 		local AssetID = SirenData.SoundID[IsAlt and "alternative" or "default"]
 		local Volume = SirenData.Volume or self.SirenDefaultProp["Volume"]
