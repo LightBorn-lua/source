@@ -245,7 +245,7 @@ function API:InitializeModules(ModulesLocation: Instance)
 		end
 		
 		env.Environment.spawn = function(exe: () -> (), ID: string?)
-			local ID = ID or HTTP:GenerateGUID(true)
+			ID = ID or HTTP:GenerateGUID(true)
 			
 			self.Modules[Module.Name].Spawns:ValInsert(ID, task.spawn(function()
 				exe()
