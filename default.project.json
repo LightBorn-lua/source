@@ -1,0 +1,13 @@
+{
+  "name": "LightBorn",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": true,
+      "LightBorn": {
+          "$path": "src"
+        }
+    }
+  }
+}
