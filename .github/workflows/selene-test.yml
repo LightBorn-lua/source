@@ -2,15 +2,14 @@ name: Selene Linter
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main ]
     paths:
       - 'src/**'
-      - '.github/workflows/selene-test.yml'
   pull_request:
-    branches: [ main, dev ]
+    branches: [ main ]
     paths:
       - 'src/**'
-      - '.github/workflows/selene-test.yml'
+  workflow_dispatch:
 
 jobs:
   selene:
