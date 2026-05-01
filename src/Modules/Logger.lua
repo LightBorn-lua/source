@@ -1,4 +1,6 @@
-function ISOTime() return os.date("!%Y-%m-%dT%H:%M:%SZ") end
+function ISOTime()
+	return os.date("!%Y-%m-%dT%H:%M:%SZ")
+end
 
 local module = {}
 

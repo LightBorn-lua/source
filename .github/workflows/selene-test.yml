@@ -3,8 +3,14 @@ name: Selene Linter
 on:
   push:
     branches: [ main, dev ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/selene-test.yml'
   pull_request:
     branches: [ main, dev ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/selene-test.yml'
 
 jobs:
   selene:

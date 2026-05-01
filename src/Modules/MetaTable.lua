@@ -11,7 +11,9 @@ export type MetaTable<T> = {
 local IgnoreOnCopy = {"Clear", "Insert", "Remove", "ValInsert", "_indexUpdate"}
 
 function copy(src: {})
-	if type(src) ~= "table" then error("src must be a table") end
+	if type(src) ~= "table" then
+		return error("src must be a table")
+	end
 	local result = {}
 	for index, v in src do
 		if table.find(IgnoreOnCopy, index) then continue end
@@ -26,11 +28,14 @@ function copy(src: {})
 end
 
 function proxify(tab: {}, Data: {}, mainprox: any, ran: boolean)
-	if type(tab) ~= "table" or type(Data) ~= "table" then error("tab and Data must be tables") end
+	if type(tab) ~= "table" or type(Data) ~= "table" then
+		return error("tab and Data must be tables")
+	end
+
 	local proxy = newproxy(true)
 	local meta = getmetatable(proxy)
 
-	meta.__index = function(self, index)
+	meta.__index = function(_, index)
 		local idx = tab[index]
 
 		if index == "_getTable" then 
@@ -72,7 +77,7 @@ function proxify(tab: {}, Data: {}, mainprox: any, ran: boolean)
 	end
 
 	function proxy:Clear()
-		for n,v in tab do
+		for n,_ in tab do
 			if table.find(IgnoreOnCopy, n) then continue end
 			tab[n] = nil
 		end
@@ -102,7 +107,9 @@ function proxify(tab: {}, Data: {}, mainprox: any, ran: boolean)
 end
 
 function Module.new(Data: {}) 
-	if type(Data) ~= "table" then error("Data must be a table") end
+	if type(Data) ~= "table" then
+		return error("Data must be a table")
+	end
 	return proxify({}, Data, nil, true) 
 end
 
