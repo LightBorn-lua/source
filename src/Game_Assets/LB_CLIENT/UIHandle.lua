@@ -21,11 +21,13 @@ type SirenFolder = Folder & {
 	},
 }
 
-function Data:AddConnect(Connect: RBXScriptConnection) table.insert(self.Connections, Connect) end
+function Data:AddConnect(Connect: RBXScriptConnection)
+	table.insert(self.Connections, Connect)
+end
 
-function Data:SendEvent(Mode: string, Data: any, ID: string?)
+function Data:SendEvent(Mode: string, Content: any, ID: string?)
 	-- print("Send event", Mode, "//", Data)
-	Event:FireServer({["Mode"]=Mode, ["Content"]=Data, ["System"]=self.System, ID=ID})
+	Event:FireServer({["Mode"]=Mode, ["Content"]=Content, ["System"]=self.System, ID=ID})
 end
 
 function Data:Remove()
@@ -115,23 +117,23 @@ function Module.Initiate(UI: UI)
 	
 	for Name, ListContent in ActionsList do
 		self.Actions[Name] = {}
-		for ID, Data in ListContent do
-			local execute: () -> () = Data
-			if Data == "Send" then
-				execute = function(self)
-					self:SendEvent(ID, nil)
+		for ID, Content in ListContent do
+			local execute: () -> () = Content
+			if Content == "Send" then
+				execute = function(_self)
+					_self:SendEvent(ID, nil)
 				end
 			end
 
-			if Data == "SendOverride" then
-				execute = function(self, Override: any)
-					self:SendEvent(ID, Override)
+			if Content == "SendOverride" then
+				execute = function(_self, Override: any)
+					_self:SendEvent(ID, Override)
 				end
 			end
 			
-			if Data == "SendOverrideWithID" then
-				execute = function(self, Override: any, SID: string?)
-					self:SendEvent(ID, Override, SID)
+			if Content == "SendOverrideWithID" then
+				execute = function(_self, Override: any, SID: string?)
+					_self:SendEvent(ID, Override, SID)
 				end
 			end
 			
@@ -151,7 +153,7 @@ function Module.Initiate(UI: UI)
 	end
 	
 	for Name,d in self.Actions do
-		for n,v in d do
+		for n,_ in d do
 			if self.Allowed and not table.find(self.Allowed, n) then
 				self.Actions[Name][n] = nil
 				continue
@@ -189,9 +191,9 @@ function Module.Initiate(UI: UI)
 		if gp then return end
 		local KeyCode = i.KeyCode
 		if not KeyCode then return end
-		local Event = Keybinds[string.upper(KeyCode.Name)]
-		if not Event then return end
-		local action_event = self.Actions.Press[Event]
+		local KeyEvent = Keybinds[string.upper(KeyCode.Name)]
+		if not KeyEvent then return end
+		local action_event = self.Actions.Press[KeyEvent]
 		if not action_event then return end
 		action_event(self)
 	end))
@@ -200,9 +202,9 @@ function Module.Initiate(UI: UI)
 		if gp then return end
 		local KeyCode = i.KeyCode
 		if not KeyCode then return end
-		local Event = Keybinds[string.upper(KeyCode.Name)]
-		if not Event then return end
-		local action_event = self.Actions.Release[Event]
+		local KeyEvent = Keybinds[string.upper(KeyCode.Name)]
+		if not KeyEvent then return end
+		local action_event = self.Actions.Release[KeyEvent]
 		if not action_event then return end
 		action_event(self)
 	end))
