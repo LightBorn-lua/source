@@ -3,7 +3,9 @@
   "description": "A moddable Emergency Lighting System for Roblox.",
   "scripts": {
     "cm": "cz",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build": "rojo build -o LightBorn.rbxm",
+    "lint": "selene"
   },
   "packageManager": "bun",
   "devDependencies": {

@@ -10,13 +10,16 @@ jobs:
     name: "Lint verification"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
+
       - name: Install commitlint
         run: bun install -D @commitlint/cli @commitlint/config-conventional
+      
       - name: Print versions
         run: |
           git --version

@@ -58,8 +58,10 @@ local Helper = require(Helpers.Helper)
 local LB_Settings = SS:FindFirstChild("LB_Settings")
 
 if not LB_Settings then
-	Logger.error("LB_Settings not found in game.ServerStorage")
-	return
+	LB_Settings = Game_Assets["default-settings"]
+	LB_Settings.Name = "LB_Settings"
+	LB_Settings.Parent = SS
+	Logger.warn("LB_Settings not found in ServerStorage, using default settings")
 end
 
 local SettingModule = LB_Settings:FindFirstChild("Settings") :: ModuleScript?

@@ -1,8 +1,11 @@
 {
   "branches": [
-    "main",
+    {
+      "name": "main"
+    },
     {
       "name": "test-release",
+      "channel": "test",
       "prerelease": "test"
     }
   ],
@@ -10,7 +13,12 @@
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     ["@semantic-release/github", {
-      "assets": ["LightBorn.rbxm"]
+      "assets": [
+        {
+          "path": "LightBorn.rbxm",
+          "label": "LightBorn Module"
+        }
+      ]
     }]
   ]
 }
