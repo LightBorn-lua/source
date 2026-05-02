@@ -1,4 +1,4 @@
-name: Test Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -12,24 +12,25 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: read
+      pull-requests: write
+      issues: write
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && github.event.pull_request.head.ref != 'main')
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
-          bun-version: 1.3.6
+          node-version: 24
 
       - name: Setup Rojo
         uses: notthebestdev/setup-rojo@v1
 
       - name: Build with Rojo
-        run: bun run build
+        run: npm run build
 
       - name: Configure Git
         run: |
@@ -37,6 +38,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Release with semantic-release
-        run: bunx semantic-release
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
