@@ -27,6 +27,12 @@ jobs:
 
       - name: Build with Rojo
         run: rojo build -o LightBorn.rbxm
+        
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
 
       - name: Release with semantic-release
         run: npx semantic-release
