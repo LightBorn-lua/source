@@ -1,4 +1,12 @@
 {
+  "branches": [
+    "main",
+    {
+      "name": "test-release",
+      "channel": "test",
+      "prerelease": "test"
+    }
+  ],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
