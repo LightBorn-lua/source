@@ -13,23 +13,23 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && github.event.pull_request.head.ref != 'main')
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && github.event.pull_request.head.ref != 'test-release')
     
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '23'
+          bun-version: 1.3.6
 
       - name: Setup Rojo
         uses: notthebestdev/setup-rojo@v1
 
       - name: Build with Rojo
-        run: rojo build -o LightBorn.rbxm
+        run: bun run build
 
       - name: Configure Git
         run: |
@@ -37,6 +37,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Release with semantic-release
-        run: npx semantic-release
+        run: bunx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
