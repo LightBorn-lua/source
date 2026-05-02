@@ -17,9 +17,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: oven-sh/setup-bun@v1
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - run: bun install
+      - name: Setup Rojo
+        uses: notthebestdev/setup-rojo@v1
 
       - name: Build with Rojo
         run: rojo build -o LightBorn.rbxm
