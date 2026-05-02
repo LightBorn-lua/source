@@ -10,6 +10,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && github.event.pull_request.head.ref != 'main')
     
     steps:
@@ -27,12 +29,11 @@ jobs:
 
       - name: Build with Rojo
         run: rojo build -o LightBorn.rbxm
-        
+
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
 
       - name: Release with semantic-release
         run: npx semantic-release
