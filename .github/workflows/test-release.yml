@@ -17,8 +17,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23'
 
       - name: Setup Rojo
         uses: notthebestdev/setup-rojo@v1
@@ -27,6 +29,6 @@ jobs:
         run: rojo build -o LightBorn.rbxm
 
       - name: Release with semantic-release
-        run: bunx semantic-release
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
