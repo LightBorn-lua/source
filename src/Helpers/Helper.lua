@@ -3,6 +3,7 @@ type SirenType = "Wail" | "Yelp" | "Phaser" | "Manual" | "Airhorn" | "Hyper" | "
 export type SystemInstance = Instance & {
 	Values: Folder,
 	SirenValues: Folder,
+	Sirens: Model?
 }
 
 export type SirenData = {

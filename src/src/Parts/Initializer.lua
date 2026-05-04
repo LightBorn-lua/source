@@ -12,6 +12,8 @@ local Models = src.Models
 local Helpers = Root.Helpers
 local Modules = Root.Modules
 
+local ConfigHandler = require(script.Parent.ConfigHandler)
+
 local Logger = require(Modules.Logger)
 
 local System = require(Models.System)
@@ -68,14 +70,24 @@ module.InitializeVehicle = function(Vehicle: Model, Connections: {[string]: () -
 	data.System = Vehicle
 	
 	data.InitConnections = Connections or {}
-	
-	local success, Settings: Helper.Config = pcall(function()
-		return require(Vehicle:FindFirstChild("Settings") :: ModuleScript)
-	end)
-	
-	if not success then
-		Logger.warn("Error on settings loading ::", Settings)
-		return
+
+	local SettingsFile = Vehicle:FindFirstChild("Settings")
+	local Settings: Helper.Config = {} :: Helper.Config
+	if SettingsFile then
+		local hasLoaded, SettingsOrError = pcall(function()
+			return require(SettingsFile :: ModuleScript)
+		end)
+		
+		if hasLoaded then
+			Settings = SettingsOrError
+		else
+			Logger.warn("Error on settings loading ::", SettingsOrError)
+		end
+	end
+
+	Settings = ConfigHandler.ValidateConfig(Settings)
+	if not Settings.LightLocation then
+		Settings.LightLocation = {Vehicle}
 	end
 	
 	local CT = Settings.CustomTypes
@@ -83,19 +95,13 @@ module.InitializeVehicle = function(Vehicle: Model, Connections: {[string]: () -
 		CT = {}
 	end
 	
-	data.DefaultLightProp = Settings.LightProperties or {
-		["Brightness"] = 12,
-		["Range"] = 50
-	}
+	data.DefaultLightProp = Settings.LightProperties
 
-	Settings.DefaultPriority = Settings.DefaultPriority or 1
+	Settings.DefaultPriority = Settings.DefaultPriority
 
-	Settings.Priority = Settings.Priority or {
-		Stage = 0,
-		Dir = -1
-	}
+	Settings.Priority = Settings.Priority
 	
-	data.Settings = success and Settings or {}
+	data.Settings = Settings
 	data.SpecialNames = {}
 	Vehicle:SetAttribute("LB_ID", data.ID)
 	
@@ -137,8 +143,8 @@ module.InitializeVehicle = function(Vehicle: Model, Connections: {[string]: () -
 	
 	data:InitializeSurfaceControl()
 	
-	Values.Stage.Value = Settings.DefaultStage or 0
-	Values.Dir.Value = Settings.DefaultDir or 0
+	Values.Stage.Value = Settings.DefaultStage
+	Values.Dir.Value = Settings.DefaultDir
 	
 	data.CurrentStage = Values.Stage.Value
 	data.CurrentDir = Values.Dir.Value

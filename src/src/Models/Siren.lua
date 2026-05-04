@@ -1,4 +1,3 @@
-local ServerScriptService = game:GetService("ServerScriptService")
 local src = script.Parent.Parent
 local Root = src.Parent
 -----------------
@@ -6,7 +5,7 @@ local Helpers = Root.Helpers
 local Modules = Root.Modules
 local Assets = Root.Assets
 
-local Logger = require(ServerScriptService.LightBorn.Modules.Logger)
+local Logger = require(Modules.Logger)
 local Helper = require(Helpers.Helper)
 local MT = require(Modules.MetaTable)
 
@@ -59,8 +58,22 @@ function API:IntializeSiren()
 		SirenValueFolder.Parent = self.System
 	end
 
+	if not self.AvailableSirens then
+		self.AvailableSirens = {}
+	end
+
 	-- SELF NOTE: CHANGE THAT TO BE STUPIDPROOF
-	local SirensLocation: Instance = self.System.Sirens
+	local SirensLocation: Instance = self.System:FindFirstChild("Sirens")
+
+	if not SirensLocation then
+		Logger.warn("No siren location found, skipping siren initialization")
+		return
+	end
+
+	if not self.Settings.Sirens then
+		Logger.warn("No siren settings found, skipping siren initialization")
+		return
+	end
 
 	for _,v: Instance in SirensLocation:GetChildren() do
 		local SirenID = v:GetAttribute("SirenID")
@@ -77,7 +90,6 @@ function API:IntializeSiren()
 		
 		local TableID = #self.SirenParts[SirenID]._getTable + 1
 
-		-- I somehow clutched that parenting on the first try
 		local SirenValues = Assets.SirenValues:Clone()
 		SirenValues.Parent = SirenValueFolder
 		SirenValues.Name = tostring(SirenID)
@@ -141,9 +153,6 @@ function API:IntializeSiren()
 			Speed = Data.Player.PlaybackSpeed,
 		}
 
-		if not self.AvailableSirens then
-			self.AvailableSirens = {}
-		end
 		self.AvailableSirens[SirenID] = {}
 		if self.Settings.Sirens[SirenID] then
 			for Name,_ in self.Settings.Sirens[SirenID]._getTable do
