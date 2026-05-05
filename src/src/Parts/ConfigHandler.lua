@@ -3,6 +3,8 @@ local src = Parts.Parent
 local Root = src.Parent
 -----------------
 local Helpers = Root.Helpers
+local Modules = Root.Modules
+local Logger = require(Modules.Logger)
 local Helper = require(Helpers.Helper)
 
 local module = {}
@@ -37,14 +39,27 @@ function module.ValidateConfig(Configuration: {}?)
     local ConfigToCheck = Configuration or {}
     local ValidatedConfig = {}
 
-    for Key, Value in DefaultConfig do
-        if ConfigToCheck[Key] ~= nil then
-            ValidatedConfig[Key] = ConfigToCheck[Key]
+    for key, value in DefaultConfig do
+        local ConfigValue = ConfigToCheck[key]
+        if ConfigValue == nil then
+            ValidatedConfig[key] = value
+            continue
+        end
+
+        if typeof(ConfigValue) ~= typeof(value) then
+            Logger.warn(`Invalid type for config key {key} (expected {typeof(value)}, got {typeof(ConfigValue)})`)
+            ValidatedConfig[key] = value
         else
-            ValidatedConfig[Key] = Value
+            ValidatedConfig[key] = ConfigValue
         end
     end
 
+    for key, value in ConfigToCheck do
+        if not ValidatedConfig[key] then
+            ValidatedConfig[key] = value
+        end
+    end
+    
     return ValidatedConfig
 end
 
