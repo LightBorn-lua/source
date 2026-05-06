@@ -9,17 +9,6 @@ export default defineConfig({
     starlight({
       title: "LightBorn",
       favicon: "/favicon.svg",
-      // defaultLocale: 'en',
-      // locales: {
-      //   en: {
-      //     label: 'English',
-      //     lang: 'en',
-      //   },
-      //   fr: {
-      //     label: 'French',
-      //     lang: 'fr',
-      //   },
-      // },
       editLink: {
         baseUrl: "https://github.com/Error-Cezar/LightBorn/edit/docs/src/",
       },
@@ -28,9 +17,9 @@ export default defineConfig({
       sidebar: [
         {
           label: "Start Here",
-          items: ["getting-started", "first-system"],
+          items: ["getting-started", "first-system", "configuration"],
         },
-        { label: "Examples", autogenerate: { directory: "examples" } },
+        { label: "API Reference", autogenerate: { directory: "api-reference" } },
       ],
       social: [
         {
