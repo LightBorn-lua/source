@@ -181,6 +181,18 @@ Default values are generated if a required configuration is missing
 
 ---
 
+### `Q2` 
+- **Type:** `boolean?`
+- Unused
+
+---
+
+### `ParkStage` 
+- **Type:** `number?`
+- Unused
+
+---
+
 ## Configuration Types
 
 ### `SirenType`
