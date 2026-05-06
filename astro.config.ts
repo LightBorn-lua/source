@@ -3,7 +3,6 @@ import { defineConfig } from "astro/config";
 import starlightThemeGalaxy from "starlight-theme-galaxy";
 
 export default defineConfig({
-  // site: 'https://localhost:4321/starlight-theme-galaxy',
   base: "/LightBorn",
   integrations: [
     starlight({
