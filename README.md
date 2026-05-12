@@ -5,4 +5,4 @@
 
 LightBorn is an attempt on creating a new standard of ELS creation within ROBLOX.
 
-[read the docs here](https://error-cezar.github.io/LightBorn) *(https://error-cezar.github.io/LightBorn)*
+[read the docs here](https://lightborn-lua.github.io/LightBorn) *(https://error-cezar.github.io/LightBorn)*
