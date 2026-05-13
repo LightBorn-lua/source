@@ -113,7 +113,7 @@ for _,v in CustomEffect and CustomEffect:GetChildren() or {} do
 end
 
 -- // EXTRAS \\ --
-local Extras = {
+local Extras = { 
 	["Lighto"] = {},
 	["Stage"] = {},
 	["Dir"] = {},
