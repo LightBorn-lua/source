@@ -1,0 +1,102 @@
+---
+title: LightBorn
+description: A moddable Emergency Lighting System for Roblox. 
+head:
+  - tag: title
+    content: LightBorn
+  - tag: style
+    content: |
+      .hero-html {
+        --size: 12rem;
+        font-size: var(--size);
+        justify-content: center;
+        line-height: var(--size);
+      }
+template: splash
+editUrl: false
+hero:
+  tagline: A moddable Emergency Lighting System Library for Roblox. 
+  # image:
+  #   file: ../../assets/galaxy.svg
+  actions:
+    - text: Get Started
+      link: /getting-started/
+      icon: right-arrow
+    - text: API reference
+      link: /api-reference/
+      icon: right-arrow
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components'
+
+## What is LightBorn ?
+
+<CardGrid stagger>
+  <Card title="Fast & Extendable" icon="rocket">
+    Plug it in and expend it as you wish
+  </Card>
+  <Card title="Open Source" icon="open-book">
+    Wide open, anyone can contribute.
+  </Card>
+  <Card title="Secure & Scalable" icon="seti:lock">
+    Simplicity & security in mind. Built to gain your trust.
+  </Card>
+</CardGrid>
+
+## FAQ
+<details>
+<summary>Why is LightBorn ?</summary>
+
+LightBorn was born from a passion in **E**mergency **L**ightning **S**ystem *(ELS)* developement and a will to fix a long living issue.
+
+Roblox never had a *"standard"* on ELS developement, most of the ELS Systems are either **locked under a paywall, gatekept, incredibly hard to work on or unoptimized.**
+
+From here, LightBorn was created to try and chance that and have a trully **Free and Open Source** standard for ELS developement.
+</details>
+
+<details>
+<summary>What should I expect from it ?</summary>
+
+Due to it's early stage you are to expect "basic" features such as siren control, lighting and the controlling UI.
+
+While there are some aspect of moddability available, it is quite not there yet.
+</details>
+
+<details>
+<summary>Is LightBorn stable ?</summary>
+
+__Not quite yet, but it's getting there.__
+
+LightBorn is currently in **beta** and haven't been used in production yet.
+
+However, it has been proven to hold on smaller projects I have taken parts on.
+
+We are always improving !
+</details>
+
+<details>
+<summary>Is LightBorn safe to use ?</summary>
+
+LightBorn releases are built directly from source thanks to **GitHub Actions**.
+
+It has no obfuscation, hidden lines are anything of the sort.
+
+This of course, can be checked by anyone, feel free to do so.
+
+</details>
+
+<details>
+<summary>Who created LightBorn ?</summary>
+
+**[ErrorCezar](https://errorcezar.lol)** and the contributors listed on the **[GitHub repository](https://github.com/LightBorn-lua/lightborn)**
+</details>
+
+
+## Open to try ?
+
+<LinkCard
+  title="Give it a shot !"
+  description="Everything from installation to your first system here"
+  href="getting-started"
+/>
