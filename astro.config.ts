@@ -15,9 +15,16 @@ export default defineConfig({
       sidebar: [
         {
           label: "Start Here",
-          items: ["getting-started", "first-system", "configuration"],
+          autogenerate: { directory: "getting-started" }
         },
-        { label: "API Reference", autogenerate: { directory: "api-reference" } },
+        {
+          label: "API Reference",
+          autogenerate: { directory: "api-reference" }
+        },
+        {
+          label: "Troubleshooting",
+          autogenerate: { directory: "troubleshooting" }
+        },
       ],
       social: [
         {
