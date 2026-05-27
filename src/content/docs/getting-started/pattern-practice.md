@@ -62,7 +62,7 @@ The pattern Environment **includes the `spawn` and `cancel` function** to be abl
 
 Their function is **the same as the original function**, with the only difference that LightBorn has access to it.
 
-# Function naming convention
+## Function naming convention
 
 :::warning
 the naming convention is still experimental and is subject to change
@@ -77,7 +77,7 @@ For example: a function named `Stage_1` would activate once the `Stage` values i
 Simular to that, a function named `Horn` would activate whenever the `Horn` value is activated.
 
 
-# Pattern scripting convention
+## Pattern scripting convention
 
 The pattern scripting has a convention to follow too,∙self-explained
 
