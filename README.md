@@ -7,7 +7,7 @@
 
 LightBorn is an attempt on creating a new standard of ELS creation within ROBLOX.
 
-[read the docs here](https://lightborn-lua.github.io/LightBorn) *(https://lightborn-lua.github.io/LightBorn)*
+[read the docs here](https://lightborn.luau.page/) *(https://lightborn.luau.page/)*
 
 ---
 *I totally didn't mess up with immune releases and basically bricked my original repo AND had to fork it to not void all of my commits :)*
