@@ -48,15 +48,6 @@ To commit, there isn't much differences.
 The only difference is to use `bun cm` instead of `git commit` to choose the commit message thanks to **Commitizen**
 
 
-## Contributing to the documentation
-
-**Pull requests are to be made on the `docs` branch**, no dev branch on this one.
-
-If there is anything outdated / incorrecting / missing, feel free to contribute.
-
-If you want to add a new page, open an issue first so that we can discuss it.
-
-
 ## Helping the community
 
 We have an open support channel in our **[Discord server](https://example.com)**.
