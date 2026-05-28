@@ -7,7 +7,7 @@
     "build": "rojo build -o LightBorn.rbxm",
     "lint": "selene"
   },
-  "packageManager": "bun",
+  "packageManager": "bun@1.3.14",
   "devDependencies": {
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
