@@ -17,8 +17,7 @@
     ["@semantic-release/github", {
       "assets": [
         {
-          "path": "LightBorn.rbxm",
-          "label": "LightBorn Module"
+          "path": "LightBorn.rbxm"
         }
       ]
     }]
