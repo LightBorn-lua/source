@@ -309,6 +309,7 @@ end
 function TurnOnCheck(CarData: Helper.SystemData, ToggleName: string)
 	if CarData.Settings.TurnOn then
 		local ToggleData = CarData.Settings.TurnOn[ToggleName]
+		
 		if ToggleData then
 			ToggleData = ToggleData._getTable
 			for Name,List in ToggleData do
@@ -415,11 +416,10 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 		-- allows for nil values while only allowing bools
 		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then return end
 		
-		local SirenID = Data["ID"] or 1
-		if typeof(SirenID) ~= "number" then return end
-		local ID = tostring(SirenID)
+		local ID = Data["ID"] or 1
+		if typeof(ID) ~= "number" then return end
 		
-		local SirenFolder = CarData.System.SirenValues:FindFirstChild(ID)
+		local SirenFolder = CarData.System.SirenValues:FindFirstChild(tostring(ID))
 		if not SirenFolder then
 			Logger.warn("Siren folder not found =>", ID)
 			return
@@ -455,11 +455,10 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 					end
 				end
 			else
-				local MainCheck = TurnOnCheck(CarData, "Special")
+				local MainCheck = TurnOnCheck(CarData, "Siren")
 				local SecCheck  = TurnOnCheck(CarData, Siren)
 				
 				if MainCheck and SecCheck then
-					print(MainCheck, SecCheck)
 					local Status = CarData:EnableSiren(Siren, ID, true)
 					if Status and CarData.Settings.OnInterfaceUse then
 						CarData.Settings.OnInterfaceUse(CarData, "Siren", Siren, true)
@@ -515,15 +514,14 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 	
 	if Mode == "Rumbler" then
 		Data = typeof(Content) ~= "table" and Content or {}
-		local SirenID = Data["ID"] or 1
-		if typeof(SirenID) ~= "number" then return end
-		local ID = tostring(SirenID)
+		local ID = Data["ID"] or 1
+		if typeof(ID) ~= "number" then return end
 		
 		local Toggle = Data["Toggle"]
 		-- allows for nil values while only allowing bools
 		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then return end
 		
-		local SirenFolder = CarData.System.SirenValues:FindFirstChild(ID)
+		local SirenFolder = CarData.System.SirenValues:FindFirstChild(tostring(ID))
 		if not SirenFolder then return end
 
 		local SirenConfig = SirenFolder.Config
