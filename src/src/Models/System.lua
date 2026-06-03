@@ -70,7 +70,7 @@ function API:InitializeUI(Player: Player, Seat: Seat)
 	Interface.Controller.Enabled = false
 	Interface.Name = "LB_INTERFACE"
 	
-	Interface.Parent = Player.PlayerGui
+	Interface.Parent = Player:FindFirstChildWhichIsA("PlayerGui")
 	
 	Interface.System.Value = self.System
 	Interface.Controller.Enabled = true
@@ -82,12 +82,17 @@ function API:RemoveUI(Seat: Seat)
 	Seat:SetAttribute("Owned", nil)
 	local Player = Players:GetPlayerByUserId(Owner)
 	if not Player then return end
-	local UI = Player.PlayerGui:FindFirstChild("LB_INTERFACE")
+	local UI = Player:FindFirstChildWhichIsA("PlayerGui"):FindFirstChild("LB_INTERFACE")
 	if not UI then return end
 	UI:Destroy()
 end
 
 function API:InitializeController()
+	if not self.Settings.SeatLocations then
+		Logger.warn("No seat locations found, skipping controller initialization")
+		return
+	end
+
 	for _,v: Instance in self.Settings.SeatLocations._getTable do
 		if typeof(v) ~= "Instance" then continue end
 		for _,Seat: Instance in v:GetDescendants() do
