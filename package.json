@@ -1,6 +1,6 @@
 {
   "name": "lightborn",
-  "description": "A moddable Emergency Lighting System for Roblox.",
+  "description": "A moddable Lighting Engine for Roblox.",
   "scripts": {
     "cm": "cz",
     "prepare": "husky",
