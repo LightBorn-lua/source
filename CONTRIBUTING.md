@@ -50,5 +50,5 @@ The only difference is to use `bun cm` instead of `git commit` to choose the com
 
 ## Helping the community
 
-We have an open support channel in our **[Discord server](https://example.com)**.
+We have an open support channel in our **[Discord server](https://discord.gg/kZpxmSgnrN)**.
 Helping out others is always appreciated!
