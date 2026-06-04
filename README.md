@@ -3,9 +3,10 @@
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 
-> A moddable Emergency Lighting System for Roblox.
+> A moddable Lighting System Engine for Roblox.
 
-LightBorn is an attempt on creating a new standard of ELS creation within ROBLOX.
+LightBorn is a moddable Lighting System Engine,
+it allows developers to more simply create light controls with stages, different patterns etc.
 
 [read the docs here](https://lightborn.luau.page/) *(https://lightborn.luau.page/)*
 
