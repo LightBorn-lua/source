@@ -1,15 +1,15 @@
 --[[
 
 	-- LightBorn --
-	
+
 	- LightBorn, a fully fleshed and centralized Emergency Lighting System controller.
-	
+
 	- DISCLAIMER:
 		- This project has been built from the ground up, all the code written (external modules excluded) is licensed to the author of LightBorn.
 		- LightBorn is its own entity, and is not related to any other product or company.
-	
+
 	--------------------------------------------------------------------------------
-	
+
 	LightBorn - a fully fleshed and centralized Emergency Lighting System controller.
     Copyright (C) 2025-2026  ErrorCezar
 
@@ -25,17 +25,18 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-    
+
 	--------------------------------------------------------------------------------
-	
-]]--
+
+]]
+--
 
 -- // SERVICES \\ --
 local Players = game:GetService("Players")
-local SS      = game:GetService("ServerStorage")
-local RS      = game:GetService("ReplicatedStorage")
-local CS      = game:GetService("CollectionService")
-local SP      = game:GetService("StarterPlayer")
+local SS = game:GetService("ServerStorage")
+local RS = game:GetService("ReplicatedStorage")
+local CS = game:GetService("CollectionService")
+local SP = game:GetService("StarterPlayer")
 
 -- // DEPENDANCES \\ --
 local Modules = script.Modules
@@ -80,9 +81,11 @@ Shared.Name = "LB_Shared"
 local LB_CLIENT = Game_Assets.LB_CLIENT
 LB_CLIENT:Clone().Parent = SP.StarterPlayerScripts
 
-for _,v in Players:GetPlayers() do
+for _, v in Players:GetPlayers() do
 	local PlayerGui = v:WaitForChild("PlayerGui", 3)
-	if not PlayerGui then continue end
+	if not PlayerGui then
+		continue
+	end
 
 	local UI = Instance.new("ScreenGui")
 	UI.Name = "LB_CLIENT_FALLBACK"
@@ -92,62 +95,61 @@ for _,v in Players:GetPlayers() do
 end
 
 -- // SYSTEM VALUES \\ --
-local AllowedLocations = Settings.AllowedLocations or {workspace}
+local AllowedLocations = Settings.AllowedLocations or { workspace }
 
-local SystemData: MT.MetaTable<{[string]: Helper.SystemData}> = MT.new({})
-local DecendantsConnection: MT.MetaTable<{[Instance]: RBXScriptConnection}> = MT.new({})
+local SystemData: MT.MetaTable<{ [string]: Helper.SystemData }> = MT.new({})
+local DecendantsConnection: MT.MetaTable<{ [Instance]: RBXScriptConnection }> = MT.new({})
 
 -- // DEFAULT INSTANCES + CUSTOMS \\ --
 local Lightos = {}
 local CustomLighto = LB_Settings.Types:FindFirstChild("Lighto")
 
-for _,v in CustomLighto and CustomLighto:GetChildren() or {} do
+for _, v in CustomLighto and CustomLighto:GetChildren() or {} do
 	Lightos[v.Name] = v
 end
 
 local Effects = {}
 local CustomEffect = LB_Settings.Types:FindFirstChild("Effect")
 
-for _,v in CustomEffect and CustomEffect:GetChildren() or {} do
+for _, v in CustomEffect and CustomEffect:GetChildren() or {} do
 	Effects[v.Name] = v
 end
 
 -- // EXTRAS \\ --
-local Extras = { 
+local Extras = {
 	["Lighto"] = {},
 	["Stage"] = {},
 	["Dir"] = {},
 	["Siren"] = {},
-	["Special"] = {}
-	
+	["Special"] = {},
 }
 local ExtraList = LB_Settings:FindFirstChild("Extra")
 
-for _,Module in ExtraList and ExtraList:GetChildren() or {} do
+for _, Module in ExtraList and ExtraList:GetChildren() or {} do
 	local status, result = pcall(require, Module)
 	if not status then
-		Logger.warn(Module.Name, "failed to load extra ->", result);
+		Logger.warn(Module.Name, "failed to load extra ->", result)
 		return nil
 	end
 
 	local Name, Extra = result.Name, result.Execute
 	if not Name or not Extra then
-		Logger.warn(Module.Name, "Couldn't to load extra ->", "no name or execute");
+		Logger.warn(Module.Name, "Couldn't to load extra ->", "no name or execute")
 		continue
 	end
 
 	if not Extras[Name] then
-		Logger.warn(Module.Name, "Extra '", Name, "' doesn't exist");
+		Logger.warn(Module.Name, "Extra '", Name, "' doesn't exist")
 		continue
 	end
 
-	table.insert(Extras[Name], Extra)	
+	table.insert(Extras[Name], Extra)
 end
 
 -- // SHARED VALUES \\ --
 local _SharedData = {
 	Settings = Settings,
-	MT = MT
+	MT = MT,
 }
 
 _SharedData["root"] = script
@@ -168,35 +170,40 @@ function OnModuleUpdate(CarData, Module, ID)
 			continue
 		end
 
-		if (Data.Started and not Data.Running and not Data.Stopped) or (Data.Started and not Data.Running and Data.Ended and not Data.Stopped) then
+		if
+			(Data.Started and not Data.Running and not Data.Stopped)
+			or (Data.Started and not Data.Running and Data.Ended and not Data.Stopped)
+		then
 			--Logger.warn("Running task", Name, "//", ID)
-			table.insert(ToRun, {ID, Name, Module.Content[Name]})
+			table.insert(ToRun, { ID, Name, Module.Content[Name] })
 		end
 	end
 
-	for _,v in ToRun do
+	for _, v in ToRun do
 		local RunID, Name, Task = v[1], v[2], v[3]
 		CarData:CreateTask(RunID, Name, Task)
 	end
 end
 
 function DecendantsCheck(Ins: Instance)
-	for _,v in AllowedLocations do
-		if Ins:IsDescendantOf(v) then return true end
+	for _, v in AllowedLocations do
+		if Ins:IsDescendantOf(v) then
+			return true
+		end
 	end
 	return false
 end
 
-function SetupPart(Module: ModuleScript) : {} | nil
+function SetupPart(Module: ModuleScript): {} | nil
 	local status, result = pcall(require, Module)
 	if not status then
-		Logger.warn(Module.Name, "failed to load part ->", result);
+		Logger.warn(Module.Name, "failed to load part ->", result)
 		return nil
 	end
 	local env = getfenv(result)
-	
+
 	env._SharedData = _SharedData
-	
+
 	return result()
 end
 
@@ -213,9 +220,13 @@ GameAssets.SetUpSharedHandler(Shared)
 GameAssets.GenerateSirenValues(SirenValues)
 
 function RemoveVehicle(Ins: Instance)
-	if not Ins then return end
-	if not Ins:HasTag(Settings.SystemName) then return end
-	
+	if not Ins then
+		return
+	end
+	if not Ins:HasTag(Settings.SystemName) then
+		return
+	end
+
 	--Logging.warn("Running remove on", Ins)
 	if DecendantsConnection[Ins] then
 		DecendantsConnection[Ins]:Disconnect()
@@ -223,9 +234,11 @@ function RemoveVehicle(Ins: Instance)
 	end
 
 	local ID = Ins:GetAttribute("LB_ID") :: string
-	
+
 	local Data = SystemData[ID]
-	if not Data then return end
+	if not Data then
+		return
+	end
 	Ins:RemoveTag(Settings.SystemName)
 	SystemData:Remove(Data.ID)
 	Data:CleanUp()
@@ -237,22 +250,26 @@ function CreateVehicle(Ins: Instance)
 		DecendantsConnection[Ins]:Disconnect()
 		DecendantsConnection:Remove(Ins)
 	end
-	
+
 	local Data: Helper.SystemData = Initializer.InitializeVehicle(Ins, {
-		["TaskUpdate"] = OnModuleUpdate
+		["TaskUpdate"] = OnModuleUpdate,
 	})
-	if not Data then return end
-	
+	if not Data then
+		return
+	end
+
 	SystemData[Data.ID] = Data
-	
-	DecendantsConnection[Ins] = Ins.AncestryChanged:Connect(function(child: Instance, parent: Instance?) 
+
+	DecendantsConnection[Ins] = Ins.AncestryChanged:Connect(function(child: Instance, parent: Instance?)
 		if parent == nil then
 			DecendantsConnection[Ins]:Disconnect()
 			DecendantsConnection:Remove(Ins)
 			return
-		end	
-		
-		if DecendantsCheck(child) then return end
+		end
+
+		if DecendantsCheck(child) then
+			return
+		end
 		RemoveVehicle(Ins)
 	end)
 end
@@ -261,26 +278,28 @@ function OnTag(Ins: Instance)
 	-- Logging.print("New tag", Ins)
 	if not DecendantsCheck(Ins) then
 		-- Logging.print("Invalid parent, starting connection")
-		DecendantsConnection[Ins] = Ins.AncestryChanged:Connect(function(child: Instance, parent: Instance?) 
+		DecendantsConnection[Ins] = Ins.AncestryChanged:Connect(function(child: Instance, parent: Instance?)
 			-- Logging.print("new parent")
 			if parent == nil then
 				DecendantsConnection[Ins]:Disconnect()
 				DecendantsConnection:Remove(Ins)
 				return
-			end	
+			end
 
-			if not DecendantsCheck(child) then return end
+			if not DecendantsCheck(child) then
+				return
+			end
 
 			CreateVehicle(Ins)
 		end)
 		return
 	end
-	
+
 	CreateVehicle(Ins)
 end
 
 CS:GetInstanceAddedSignal(Settings.SystemName):Connect(OnTag)
-for _,v in CS:GetTagged(Settings.SystemName) do
+for _, v in CS:GetTagged(Settings.SystemName) do
 	OnTag(v)
 end
 CS:GetInstanceRemovedSignal(Settings.SystemName):Connect(RemoveVehicle)
@@ -288,18 +307,20 @@ CS:GetInstanceRemovedSignal(Settings.SystemName):Connect(RemoveVehicle)
 -- // CLIENT + SERVER RELAY \\ --
 function TurnOffCheck(CarData: Helper.SystemData)
 	if CarData.Settings.TurnOff then
-		for ToggleName,Data in CarData.Settings.TurnOff._getTable do
-			for Name,List in Data do
+		for ToggleName, Data in CarData.Settings.TurnOff._getTable do
+			for Name, List in Data do
 				local ToCheck = CarData.System.Values:FindFirstChild(Name)
 				if not ToCheck then
-					Logger.warn("invalid toggle name", Name);
+					Logger.warn("invalid toggle name", Name)
 					continue
 				end
 
-				if not table.find(List, ToCheck.Value) then continue end
+				if not table.find(List, ToCheck.Value) then
+					continue
+				end
 
 				if ToggleName == "Siren" then
-					CarData:DisableSiren("All", true, {"Airhorn", "Manual"})
+					CarData:DisableSiren("All", true, { "Airhorn", "Manual" })
 				end
 			end
 		end
@@ -309,56 +330,70 @@ end
 function TurnOnCheck(CarData: Helper.SystemData, ToggleName: string)
 	if CarData.Settings.TurnOn then
 		local ToggleData = CarData.Settings.TurnOn[ToggleName]
-		
+
 		if ToggleData then
 			ToggleData = ToggleData._getTable
-			for Name,List in ToggleData do
+			for Name, List in ToggleData do
 				local ToCheck = CarData.System.Values:FindFirstChild(Name)
 				if not ToCheck then
-					Logger.warn("invalid toggle name", Name);
+					Logger.warn("invalid toggle name", Name)
 					continue
 				end
-				if not table.find(List, ToCheck.Value) then continue end
-				
+				if not table.find(List, ToCheck.Value) then
+					continue
+				end
+
 				return true
 			end
-			
+
 			return false
 		end
 	end
-	
+
 	return true
 end
 
-local SirenNames = {"Wail", "Yelp", "Airhorn", "Manual", "Hyper", "Phaser", "PA"}
-Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {}) 
-	if typeof(Content) ~= "table" then return end
+local SirenNames = { "Wail", "Yelp", "Airhorn", "Manual", "Hyper", "Phaser", "PA" }
+Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
+	if typeof(Content) ~= "table" then
+		return
+	end
 	-- warn("Got content from", player, "//", Content)
 	local Mode: string = Content["Mode"]
 	local Data: any = Content["Content"]
 	local System: Model = Content["System"]
-	
-	if typeof(System) ~= "Instance" then return end
-	if not System:HasTag(Settings.SystemName) then return end
+
+	if typeof(System) ~= "Instance" then
+		return
+	end
+	if not System:HasTag(Settings.SystemName) then
+		return
+	end
 
 	local LB_ID = System:GetAttribute("LB_ID")
-	if not LB_ID then return end
-	
+	if not LB_ID then
+		return
+	end
+
 	local CarData: Helper.SystemData = SystemData[LB_ID]
-	if not CarData then return end
-	
+	if not CarData then
+		return
+	end
+
 	local Values = CarData.System.Values
-	
+
 	--Logging.print("Ran mode", Mode)
-	
+
 	if Mode == "Stage" then
 		local ID = Data
-		if typeof(ID) ~= "number" and ID ~= nil then return end
+		if typeof(ID) ~= "number" and ID ~= nil then
+			return
+		end
 
 		if ID == nil then
 			ID = Values.Stage.Value + 1
 		end
-		
+
 		if ID > CarData.MaxStage then
 			ID = 0
 		end
@@ -366,88 +401,94 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 		if ID < 0 then
 			ID = 0
 		end
-		
-		for _,v in _SharedData.Extras.Stage do
+
+		for _, v in _SharedData.Extras.Stage do
 			v(ID, CarData)
 		end
-		
+
 		if CarData.Settings.OnInterfaceUse then
 			CarData.Settings.OnInterfaceUse(CarData, "Stage", ID)
 		end
-		
+
 		Values.Stage.Value = ID
 		TurnOffCheck(CarData)
 		return
 	end
-	
+
 	if Mode == "Directional" then
 		local ID = Data
-		if typeof(ID) ~= "number" and ID ~= nil then return end
-		
+		if typeof(ID) ~= "number" and ID ~= nil then
+			return
+		end
+
 		if ID == nil then
 			ID = Values.Dir.Value + 1
 		end
-		
+
 		if ID > CarData.MaxDir then
 			ID = 0
 		end
 		if ID < 0 then
 			ID = 0
 		end
-		
-		for _,v in _SharedData.Extras.Dir do
+
+		for _, v in _SharedData.Extras.Dir do
 			v(ID, CarData)
 		end
-		
+
 		if CarData.Settings.OnInterfaceUse then
 			CarData.Settings.OnInterfaceUse(CarData, "Dir", ID)
 		end
-		
+
 		Values.Dir.Value = ID
 		TurnOffCheck(CarData)
 		return
 	end
-	
+
 	if table.find(SirenNames, Mode) then
 		Data = typeof(Content) ~= "table" and Content or {}
 		local Siren = Mode
 		local Toggle = Data["Toggle"]
-		
+
 		-- allows for nil values while only allowing bools
-		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then return end
-		
+		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then
+			return
+		end
+
 		local ID = Data["ID"] or 1
-		if typeof(ID) ~= "number" then return end
-		
+		if typeof(ID) ~= "number" then
+			return
+		end
+
 		local SirenFolder = CarData.System.SirenValues:FindFirstChild(tostring(ID))
 		if not SirenFolder then
 			Logger.warn("Siren folder not found =>", ID)
 			return
 		end
-		
+
 		local SirenIns = SirenFolder:FindFirstChild(Siren)
 		if not SirenIns then
 			Logger.warn("No siren Instance =>", Siren)
 			return
 		end
-		
+
 		-- if toggle is nil, make it the opposite of the current status
 		if Toggle == nil then
 			Toggle = not SirenIns.Value
 		end
-		
+
 		-- whenever the old siren is saved (turning it off plays the old siren)
 		local IsSpecial = ((Siren == "Airhorn") or (Siren == "Manual") or (Siren == "PA"))
-		
-		for _,v in _SharedData.Extras.Siren do
+
+		for _, v in _SharedData.Extras.Siren do
 			v(Siren, Toggle, CarData)
 		end
-		
+
 		if Toggle then
 			if IsSpecial then
 				local MainCheck = TurnOnCheck(CarData, "Special")
-				local SecCheck  = TurnOnCheck(CarData, Siren)
-				
+				local SecCheck = TurnOnCheck(CarData, Siren)
+
 				if MainCheck and SecCheck then
 					local Status = CarData:EnableSiren(Siren, ID, false, (Siren == "PA" and player or nil))
 					if Status and CarData.Settings.OnInterfaceUse then
@@ -456,8 +497,8 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 				end
 			else
 				local MainCheck = TurnOnCheck(CarData, "Siren")
-				local SecCheck  = TurnOnCheck(CarData, Siren)
-				
+				local SecCheck = TurnOnCheck(CarData, Siren)
+
 				if MainCheck and SecCheck then
 					local Status = CarData:EnableSiren(Siren, ID, true)
 					if Status and CarData.Settings.OnInterfaceUse then
@@ -481,65 +522,73 @@ Shared.Handler.OnServerEvent:Connect(function(player: Player, Content: {})
 		return
 	end
 
-	if table.find((CarData.SpecialNames :: MT.MetaTable<{any}>)._getTable, Mode) then
+	if table.find((CarData.SpecialNames :: MT.MetaTable<{ any }>)._getTable, Mode) then
 		Data = typeof(Content) ~= "table" and Content or {}
 		local Special = Mode
 		local Toggle = Data["Toggle"]
 		-- allows for nil values while only allowing bools
-		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then return end
+		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then
+			return
+		end
 
 		local ValueIns = Values:FindFirstChild(Special)
 		if not ValueIns then
 			Logger.warn("No siren instance =>", Special)
 			return
 		end
-		
+
 		-- if toggle is nil, make it the opposite of the current status
 		if Toggle == nil then
 			Toggle = not ValueIns.Value
 		end
-		
-		for _,v in _SharedData.Extras.Special do
+
+		for _, v in _SharedData.Extras.Special do
 			v(Special, Toggle, CarData)
 		end
-		
+
 		if CarData.Settings.OnInterfaceUse then
 			CarData.Settings.OnInterfaceUse(CarData, "Special", Special, Toggle)
 		end
-		
+
 		ValueIns.Value = Toggle
 		TurnOffCheck(CarData)
 		return
 	end
-	
+
 	if Mode == "Rumbler" then
 		Data = typeof(Content) ~= "table" and Content or {}
 		local ID = Data["ID"] or 1
-		if typeof(ID) ~= "number" then return end
-		
+		if typeof(ID) ~= "number" then
+			return
+		end
+
 		local Toggle = Data["Toggle"]
 		-- allows for nil values while only allowing bools
-		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then return end
-		
+		if typeof(Toggle) ~= "boolean" and Toggle ~= nil then
+			return
+		end
+
 		local SirenFolder = CarData.System.SirenValues:FindFirstChild(tostring(ID))
-		if not SirenFolder then return end
+		if not SirenFolder then
+			return
+		end
 
 		local SirenConfig = SirenFolder.Config
 		local ValueIns = SirenConfig.IsAlt
 		if Toggle == nil then
 			Toggle = not ValueIns.Value
 		end
-		
-		for _,v in _SharedData.Extras.Special do
+
+		for _, v in _SharedData.Extras.Special do
 			v("Alt", Toggle, CarData)
 		end
-		
+
 		if CarData.Settings.OnInterfaceUse then
 			CarData.Settings.OnInterfaceUse(CarData, "Rumbler", Toggle)
 		end
-		
+
 		SirenConfig.IsAlt.Value = Toggle
-		
+
 		TurnOffCheck(CarData)
 		CarData:RefreshSiren(ID)
 	end
